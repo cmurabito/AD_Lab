@@ -36,7 +36,7 @@ To configure our networking, we want to make sure that we set a static IP for ou
 <img width="1362" height="869" alt="Screenshot 2025-12-21 190549" src="https://github.com/user-attachments/assets/120468e7-4a59-48b3-a87f-1691f5657e5c" />
 
 ## Installing Active Directory DS
-AD DS is the core Windows Server role for network identities, resources, and security. This will give us the power to enforce things like group policy and access control, as well as enable authentication. It is therefore essential that we install and configure it for our lab. This will provide a single point of administration and ensure users can log in and access resources within the lab environment. First we open the A"dd Roles and Features Wizard".
+AD DS is the core Windows Server role for network identities, resources, and security. This will give us the power to enforce things like group policy and access control, as well as enable authentication. It is therefore essential that we install and configure it for our lab. This will provide a single point of administration and ensure users can log in and access resources within the lab environment. First we open the "Add Roles and Features Wizard".
 <img width="1363" height="866" alt="Screenshot 2025-12-21 190741" src="https://github.com/user-attachments/assets/28a12c99-30d3-4ffb-adb9-84f67e2d0f32" />
 
 We will hit next until we get to "Server Selection" and make sure our server is selected, which it should be by default.
@@ -63,6 +63,55 @@ Its normally best practice to create a specific server name for your Windows Ser
 
 After a restart, we can verify our settings in the Local Server menu.
 <img width="1367" height="874" alt="Screenshot 2025-12-21 192447" src="https://github.com/user-attachments/assets/5e74a922-13d3-4ec4-8847-69b6c114230f" />
+
+## Enabling DHCP
+In order for our server to hand out IP addresses to our internal network, we are going to have to enable DHCP. We can do this by first installing this as a role, just like when we installed AD DS, so go to "Add Roles and Features" and click on DHCP Server, continue until you get to this section.
+<img width="1359" height="867" alt="Screenshot 2025-12-22 102852" src="https://github.com/user-attachments/assets/b9e3c9f1-5167-487b-b15c-6edc42bfdb33" />
+
+The next section is pretty straightforward as well, just keep clicking on continue.
+<img width="1357" height="867" alt="Screenshot 2025-12-22 102917" src="https://github.com/user-attachments/assets/768c0cf7-366f-4eb4-a604-3a87782f77a4" />
+
+Now our Goal is to configure a scope. A scope is a range of IP addresses that will be either provisioned or reserved for devices connecting to our server. To do this we can open "Tools" and select "DHCP".
+<img width="1358" height="870" alt="Screenshot 2025-12-22 103012" src="https://github.com/user-attachments/assets/d04087be-c4fc-4561-9cba-555cf985eff3" />
+
+This will open the DHCP server manager. Now we select more actions, and then "New Scope".
+<img width="758" height="563" alt="Screenshot 2025-12-22 103023" src="https://github.com/user-attachments/assets/e800c8a4-32d4-4bf6-ab2b-8aaa12e41cf3" />
+
+The "New Scope Wizard" will pop up, we can then enter in an IP address range. Even though i have no plans to use 200 devices, I am going to create a range of 192.168.10.1 - 192.168.10.200 just for this lab's sake.
+<img width="1350" height="697" alt="Screenshot 2025-12-22 104754" src="https://github.com/user-attachments/assets/a2f2d8aa-517d-49bc-957a-cae8426c880d" />
+
+It will then ask us if we want to create exclusions. An exclusion is an IP range that will be reserved for any devices that we want to add in the future. I do plan on adding more management devices in the future, such as a second server, and will create an excluded address range of 192.168.10.1 - 192.168.10.30.
+<img width="1025" height="634" alt="Screenshot 2025-12-22 104803" src="https://github.com/user-attachments/assets/6c425641-ab3e-4268-a7f8-c0d9f321bfa7" />
+
+The next section we will be looking at is the router, and it will ask us the IP for the default gateway. Now, you can leave this blank if you do not want the computers connecting to your domain to have internet, but for learning purposes and because I do like to rabbit hole, I will be configuring NAT in the future. So I will set this to 192.168.10.1. (It should be noted, earlier in this lab I configured the IP of the server to this IP address, but changed the IP of the server to 192.168.10.10 later because of the network configuration I want to set up.)
+<img width="1355" height="842" alt="Screenshot 2025-12-22 104840" src="https://github.com/user-attachments/assets/b9281389-1633-49ec-9d0a-fae3c8eec410" />
+
+Now, we get to the domain name and DNS servers section. If DNS is enabled on your server, this should automatically populate. If it does not automatically populate, you can type in the server name(In my case the name of the forest, Lab.local) and it should pull the IP into the next box.
+<img width="1352" height="837" alt="Screenshot 2025-12-22 105003" src="https://github.com/user-attachments/assets/c75d4e90-6cf8-4698-be03-bfbebb17e84d" />
+
+Then we simply state that we want to activate this scope now.
+<img width="1356" height="833" alt="Screenshot 2025-12-22 105026" src="https://github.com/user-attachments/assets/c36d822a-6969-4270-a595-7f4eb8958c5e" />
+
+That should do it for DHCP configuration!
+
+## Preventing Future DNS Issues
+I wanted to go ahead and prevent any DNS issues in the future so I pulled up the DNS Server Manager.
+<img width="1356" height="871" alt="Screenshot 2025-12-22 104121" src="https://github.com/user-attachments/assets/bec6960b-13c3-41d8-af03-3961a9671c26" />
+
+I then went to interfaces, and selected the IP of the internal ethernet adapter's interface.
+<img width="1359" height="863" alt="Screenshot 2025-12-22 104256" src="https://github.com/user-attachments/assets/db15b98c-ac35-453f-9cbb-a093c99dd30b" />
+
+## Connecting Windows VM to Domain
+Now its time to connect our first Windows 11 VM to the domain! This assumes you already have a Windows VM setup. It is as simple as going into Settings, searching for Access Work or School, selecting Connect and "Join this device to a local Active Directory domain", and then inputting the name of our domain, which is "Lab.local".
+<img width="922" height="749" alt="Screenshot 2025-12-22 105518" src="https://github.com/user-attachments/assets/c537ecca-7c77-4358-87e3-846489d27e26" />
+
+When prompted for credentials, we can input our credentials, and then select skip on the next section, the computer will then restart and be connected to our domain. Now we need some users!
+
+## Creating Users in AD
+If we go to Tools, and then Active Directory Users and Computers, we can create managed users that will be able to log in to our domain connected machines. We do this by selecting Users, and then right clicking and selecting New > User. For my first User I figured Jason Bourne would be a lovely employee and my company has given him a great offer he can't refuse. We can enter a name for him, and a username as well. Keep in mind when creating usernames to stick to a naming scheme, his username will be jbourne.
+<img width="1356" height="829" alt="Screenshot 2025-12-22 105728" src="https://github.com/user-attachments/assets/8fd381be-f321-4968-ad59-ad4376aacfa6" />
+
+On the next section it will ask to set a password, and will give us some options such as "User must change password on next logon", we want to set an easy temp password to remember, and then when he theoretically logs in for the first time it will ask him to change that to something he wants. We follow that workflow and then we should be able to get a successful login!
 
 
 
