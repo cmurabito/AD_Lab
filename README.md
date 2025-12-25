@@ -6,8 +6,7 @@ The purpose of this repository is to document my progress towards mastering Acti
 My first step in this homelab was to install Windows Server 2022 within Hyper-V.
 <img width="1919" height="1028" alt="Screenshot 2025-12-21 183314" src="https://github.com/user-attachments/assets/12facdbf-d3ca-4f8a-be46-67f14d31611e" />
 
-From Hyper-V, on the right hand side, we can create a new virtual machine by selecting "New" and then "Virtual Machine", which brings us into the "New Virtual Machine Wizard".
-I wanted to provision this machine with around 8GB of memory, so I entered 8192 into the text box below, although if you're copying this you can put whatever you feel is best.
+From Hyper-V, on the right hand side, we can create a new virtual machine by selecting "New" and then "Virtual Machine", which brings us into the "New Virtual Machine Wizard".I wanted to provision this machine with around 8GB of memory, so I entered 8192 into the text box below, although if you're copying this you can put whatever you feel is best.
 <img width="701" height="533" alt="Screenshot 2025-12-21 183612" src="https://github.com/user-attachments/assets/d0237d31-c237-4b4c-8e7f-76abc1897971" />
 
 Then we get to the virtual hard disk step, I left this as it was besides the Size box, which I knocked down to 100GB, since this is a home lab and for my purposes I do not think I will be needing more than that.
@@ -16,8 +15,7 @@ Then we get to the virtual hard disk step, I left this as it was besides the Siz
 Then on the next screen we can configure how we want the machine installed. This is Hyper-V, and we are using the Server Evaluation .iso, so we will select .iso and specify our location and then continue until we finish.
 <img width="701" height="528" alt="Screenshot 2025-12-21 184017" src="https://github.com/user-attachments/assets/0da8744f-82c0-426f-af6f-13e904705c36" />
 
-The next step that we have to do is configure our networking. My idea for this is to have the server connected to the internet, as well as have an extra adapter for an internal network where a virtual Windows 11 machine can connect.
-We do this by creating an external adapter through the virtual switch manager, as well as an internal adapter and connecting both of them to our new virtual machine through it's network settings.
+The next step that we have to do is configure our networking. My idea for this is to have the server connected to the internet, as well as have an extra adapter for an internal network where a virtual Windows 11 machine can connect.We do this by creating an external adapter through the virtual switch manager, as well as an internal adapter and connecting both of them to our new virtual machine through it's network settings.
 <img width="716" height="676" alt="Screenshot 2025-12-21 184106" src="https://github.com/user-attachments/assets/4d7e4bcf-6c4d-4a30-8112-2826741f4f0b" />
 <img width="714" height="681" alt="Screenshot 2025-12-21 200507" src="https://github.com/user-attachments/assets/f8ba9535-3d52-45bf-ada6-c4009c7f9f75" />
 <img width="708" height="678" alt="Screenshot 2025-12-21 200732" src="https://github.com/user-attachments/assets/1738b664-1ece-4f25-a87b-1a9fe397785d" />
@@ -113,5 +111,28 @@ If we go to Tools, and then Active Directory Users and Computers, we can create 
 
 On the next section it will ask to set a password, and will give us some options such as "User must change password on next logon", we want to set an easy temp password to remember, and then when he theoretically logs in for the first time it will ask him to change that to something he wants. We follow that workflow and then we should be able to get a successful login!
 
+## A Little Bit About FSMO Roles
+FSMO stands for "Flexible Single Master Operations" and are Active Directory tasks that must be handled by one domain controller at a time in order to avoid conflicts. Active Directory is a multi-master system although these roles are single-master by design. In a multi-master system, more than one server can make changes at the same time, which means all domain controllers can create users, change passwords, and modify group membership. AD uses these roles for critical tasks where a conflict could be dangerous, for example, two domain controllers modifying the schema at the same time. There are five of these roles, two at the Forest Level, and three at the Domain Level. 
+### Forest Level FSMO Roles
 
+* Schema Master
+* Domain Naming Master
+
+### Domain Level FSMO Roles
+
+* RID Master
+* PDC Emulator
+* Infrastructure Master
+
+So, what exactly do these roles do? Well, let's break down each one.
+
+The Schema Master controls all changes to the Active Directory schema. The schema is defined by object types, such as user, computer, group, etc., and attributes, such as an email or a phone number. It is used when extending the schema, which is rarely going to be part of normal operations. If this role goes down, then schema changes will fail but normal authentication will still continue, as well as directory operations. There is only one per forest and should only be online when schema changes are needed.
+
+The Domain Naming Master controls adding and removing domains in the forest and manages application directory partitions. It is used when creating a new domain or a tree, as well as removing a domain. If it goes down, then you won't be able to add or remove domains, but the existing ones will continue working normally. There is also only one per forest.
+
+The RID Master's job is to allocate RID pools to domain controllers. These RIDs are used to create unique SIDs for users, groups, and computers. It is used anytime a domain controller creates a new security principal, and RID pools are requested periodically by domain controllers. Domain controllers will use existing RID pools, so short term, there will be no effect if this goes down, although long term, you will eventually be unable to create users, groups, or computers. There is one of these per domain.
+
+The PDC Emulator is the most critical FSMO role. It handles Password change priority replication, account lockout processing, time synchronization, NTLM authentication and legacy compatibilty, as well as GPO editing coordination. It is used at every login, for every password change, and time checks across the domain. If this goes down it can cause authentication delays, password changes that don't correctly work, and Kerberos failures caused by time drift. This should be on the most reliable domain controller and be backed by redundancy planning and monitoring. There is one per domain.
+
+The Infrastructure Master maintains cross-domain object references and updates group memberships when members are from other domains. It is used when users from different domains are added to groups, and for periodic reference updates. If this goes down, group memberships may show outdated information, although in a single domain forest, there should be little to no effect. There is only one per domain.
 
