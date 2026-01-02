@@ -136,3 +136,53 @@ The PDC Emulator is the most critical FSMO role. It handles Password change prio
 
 The Infrastructure Master maintains cross-domain object references and updates group memberships when members are from other domains. It is used when users from different domains are added to groups, and for periodic reference updates. If this goes down, group memberships may show outdated information, although in a single domain forest, there should be little to no effect. There is only one per domain.
 
+## Configuring DNS
+What is the importance of DNS? DNS is a critical service that your domain controller needs in order for your network to operate. This is what allows computers, users, and services to find each other on the network. If you are using AD then this is required and should be installed on the domain controller. It will help users log in to the domain, services like printing and file servers to locate servers, and AD to replicate properly. So how do we correctly configure this?
+
+First, we need to install DNS as a role. This is done by opening "Add Roles and Features" and selecting "DNS". After this is installed, you can select "Tools" > "DNS" and this will open up the DNS Manager.
+<img width="1010" height="863" alt="Screenshot 2025-12-30 184155" src="https://github.com/user-attachments/assets/04178264-26eb-40b5-85f5-f98f17a664b3" />
+
+Under here we can see that we have Forward Lookup Zones, Reverse Lookup Zones, Trust Points, Conditional Forwarders, Root Hints, and Forwarders. We will focus on the first two for this configuration. Forward lookup zones should have been automatically populated from the install, so we wont have to worry too much about that. A Foward Lookup Zone is a database on the DNS Server that maps Hostnames to IP Addresses. A Reverse Lookup Zone will map an IP Address back to a Hostname, allowing DNS to determine the computer's name from it's IP. This should be empty by default and is what we will need to configure. In order to do this we can click on Reverse Lookup Zones, right click, and click "New Zone". This will bring us to the "New Zone Wizard".
+<img width="489" height="383" alt="Screenshot 2026-01-01 175744" src="https://github.com/user-attachments/assets/0a69e60f-6f89-4e81-83d5-0329b0fe835f" />
+
+We will then make sure that "Primary Zone" is selected and will click on next.
+<img width="493" height="387" alt="Screenshot 2026-01-01 175803" src="https://github.com/user-attachments/assets/7d4e8e45-d292-4e0e-b857-1c881269e448" />
+
+Then we will make sure that "To all DNS servers running on domain controllers in this domain" is selected.
+<img width="496" height="385" alt="Screenshot 2026-01-01 175815" src="https://github.com/user-attachments/assets/371eceef-4466-406e-a375-ebc6f75ca418" />
+
+We will then create an IPv4 reverse lookup zone, so make sure that is selected.
+<img width="492" height="387" alt="Screenshot 2026-01-01 175825" src="https://github.com/user-attachments/assets/2a1c649c-82a6-45d1-a722-c95654c19c32" />
+
+The next menu we will enter our network ID, this should be the first three octets of your IP address you assigned your domain controller. So if you assigned 192.168.10.1, it will be 192.168.10.
+<img width="489" height="382" alt="Screenshot 2026-01-01 175840" src="https://github.com/user-attachments/assets/92b888e9-e787-4515-a9cf-6ebeeeb3fa7c" />
+
+Make sure "Allow only secure dynamic updates" is selected.
+<img width="488" height="377" alt="Screenshot 2026-01-01 175852" src="https://github.com/user-attachments/assets/b65cc47f-85be-488e-b3f8-b531ef3c2016" />
+
+And then hit finish to complete this configuration.
+<img width="495" height="389" alt="Screenshot 2026-01-01 175904" src="https://github.com/user-attachments/assets/1857268b-b645-4155-9815-b9cf3b25b8d5" />
+
+Our newly created zone should now be populated under Reverse Lookup Zones.
+<img width="743" height="516" alt="Screenshot 2026-01-01 175915" src="https://github.com/user-attachments/assets/8a83efad-95e2-42e9-b885-bb7ac39b8664" />
+
+After this, there is still one more thing we have left to do. If we run nslookup, we can see that our default server is unknown. This is because the name of our server is not resolving to our IP address that is populated.
+<img width="1019" height="835" alt="Screenshot 2026-01-01 165836" src="https://github.com/user-attachments/assets/f09f9f12-8f2d-4313-a64d-ef625d6573f1" />
+
+We will need to fix this. We can do that by heading into Reverse Lookup Zones, right clicking the zone we created, selecting properties, and changing the IP of the name server to our DC's IP address.
+<img width="1016" height="858" alt="Screenshot 2026-01-01 170216" src="https://github.com/user-attachments/assets/d1614a96-4919-43f5-af5d-a71231bb80a9" />
+
+After we do this, we will see that the default server name resolves to our DC's name, which in this situation is "LAB-DC-01.Lab.Local".
+<img width="970" height="199" alt="Screenshot 2026-01-01 170257" src="https://github.com/user-attachments/assets/668f515d-bebf-454c-96f2-3f316aebe24d" />
+
+How can we verify that this is running now? Well if we log on to our client VM and head into the command prompt, we can enter "ping LAB-DC-01.Lab.local" and see if we get a response. You should receive a reply back if DNS is working as expected.
+<img width="1015" height="866" alt="Screenshot 2025-12-30 185552" src="https://github.com/user-attachments/assets/e978f089-eac6-4fad-b27f-8cc85fd8c5d2" />
+
+DNS should now be configured within our Active Directory environment!
+
+
+
+
+
+
+
