@@ -224,6 +224,29 @@ How can we verify that this is running now? Well if we log on to our client VM a
 
 DNS should now be configured within our Active Directory environment!
 
+## Intentionally Breaking DNS and Fixing
+
+So what happens if DNS fails? A few different things can occur, authentication can fail, services/computers can't find each other, etc.. Let's intentionally break DNS so that we can more easily identify these issues and how to resolve them. First, we are going to delete our forward lookup zone, "Lab.local".
+
+<img width="1009" height="838" alt="Screenshot 2026-01-01 171753" src="https://github.com/user-attachments/assets/468a1da3-dc0d-4707-8718-6ae865ef30bc" />
+
+Then on our client machine, we'll run a "ipconfig /flushdns" along with a "klist purge" command just to be safe.
+
+<img width="517" height="244" alt="Screenshot 2026-01-01 172128" src="https://github.com/user-attachments/assets/42fa5ec8-7c03-498e-99b6-863c39ef32ab" />
+
+We will also restart the netlogon service on our domain controller.
+
+<img width="1017" height="757" alt="Screenshot 2026-01-01 172307" src="https://github.com/user-attachments/assets/48c8fe1b-557d-4006-85b7-d5e83588c36f" />
+
+If we then logout and then log back in, we can see that we are still able to log in to this computer. No issue right? That's because the windows machine has the credentials cached and the user profile pulled onto it already. But what if somebody else tries to use this machine? Say another member of another shift comes in and sits down at this desk and attempts to log on. We're going to create a new user called "tester" and attempt to log on. As you can see, we get "We can't sign you in with this credential because your domain isn't available. Make sure your device is connected to your organization's network and try again. If you previously signed in on this device with another credential, you can sign in with that credential.". 
+
+<img width="1010" height="748" alt="Screenshot 2026-01-01 172618" src="https://github.com/user-attachments/assets/d244df61-5c18-4d0f-b595-43e1ff36cca8" />
+
+Why does this happen? Because without DNS correctly configured, our client machine is not able to find our domain controller, even though we are connected to that domain so to speak. So now we need to fix it. We can do this by rebuilding the forward lookup zone that we deleted. In order to do this, we can go to our domain controller, right click within "Forward Lookup Zones", and click "New Zone", and rebuild the zone "Lab.local". We should then be able to sign in.
+
+<img width="1011" height="832" alt="Screenshot 2026-01-01 172936" src="https://github.com/user-attachments/assets/b300f30e-45e8-4eb8-8f8e-27ad27cbf7ad" />
+
+
 
 
 
