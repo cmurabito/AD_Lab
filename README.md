@@ -4,6 +4,7 @@ The purpose of this repository is to document my progress towards mastering Acti
 # Documentation
 ## Network Diagram
 For this lab setup we are going to be connecting our domain controller to the external internet as well as running an internal network for our client VM on Hyper-V. This will change eventually and we will be adding another server.
+
 <img width="121" height="461" alt="Network Diagram drawio" src="https://github.com/user-attachments/assets/5cfde644-8b42-4306-917a-df89344c47ca" />
 
 ## Setting Up Windows Server VM Within Hyper-V
