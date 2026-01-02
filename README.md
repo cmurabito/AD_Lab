@@ -2,6 +2,10 @@
 The purpose of this repository is to document my progress towards mastering Active Directory and Windows Server. Hyper-V will be used as the hypervisor of choice during this process. I will be updating my progress below.
 
 # Documentation
+## Network Diagram
+For this lab setup we are going to be connecting our domain controller to the external internet as well as running an internal network for our client VM on Hyper-V. This will change eventually and we will be adding another server.
+<img width="121" height="461" alt="Network Diagram drawio" src="https://github.com/user-attachments/assets/5cfde644-8b42-4306-917a-df89344c47ca" />
+
 ## Setting Up Windows Server VM Within Hyper-V
 My first step in this homelab was to install Windows Server 2022 within Hyper-V.
 
@@ -225,7 +229,6 @@ How can we verify that this is running now? Well if we log on to our client VM a
 DNS should now be configured within our Active Directory environment!
 
 ## Intentionally Breaking DNS and Fixing
-
 So what happens if DNS fails? A few different things can occur, authentication can fail, services/computers can't find each other, etc.. Let's intentionally break DNS so that we can more easily identify these issues and how to resolve them. First, we are going to delete our forward lookup zone, "Lab.local".
 
 <img width="1009" height="838" alt="Screenshot 2026-01-01 171753" src="https://github.com/user-attachments/assets/468a1da3-dc0d-4707-8718-6ae865ef30bc" />
