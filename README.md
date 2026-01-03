@@ -250,10 +250,15 @@ Why does this happen? Because without DNS correctly configured, our client machi
 
 <img width="1011" height="832" alt="Screenshot 2026-01-01 172936" src="https://github.com/user-attachments/assets/b300f30e-45e8-4eb8-8f8e-27ad27cbf7ad" />
 
+## Creating OU Structure
+OU stands for "Organizational Unit" and is utilized as a container object in order to organize, manage, and apply policies to users, computers, and other objects within a domain. In order to be able to apply group policy effectively within our domain, an OU structure needs to be created, which is exactly what we are going to do. First, we need to open Active Directory Users and Computers.
 
+<img width="1013" height="754" alt="Screenshot 2026-01-02 124103" src="https://github.com/user-attachments/assets/e540fcc9-bd24-40a3-baad-58dd5ce725b3" />
 
+Then, we need to right click on our domain, select new, then organizational unit.
 
+<img width="1017" height="756" alt="Screenshot 2026-01-02 124133" src="https://github.com/user-attachments/assets/030b258d-3dea-492a-aee3-e087efbf944e" />
 
+From here, we are going to create an organizational unit called "LAB_Enterprises" and create organizational units within that one for each department, and role, making sure we separate users and computers from each other. Many different IT teams in the real world will have different ways of going about this, but for the purpose of this lab this is how we will go about it.
 
-
-
+<img width="1018" height="756" alt="Screenshot 2026-01-02 153233" src="https://github.com/user-attachments/assets/8143842a-1953-49d3-a96d-1b5c60b52669" />
