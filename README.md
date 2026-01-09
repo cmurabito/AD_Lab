@@ -8,6 +8,13 @@ The purpose of this repository is to document my progress towards mastering Acti
 * [Changing Server Name](#changing-server-name)
 * [Enabling DHCP](#enabling-dhcp)
 * [Preventing Future DNS Issues](#preventing-future-dns-issues)
+* [Connecting Windows VM to Domain](#connecting-windows-vm-to-domain)
+* [Creating Users](#creating-users-in-ad)
+* [FSMO Roles](#a-little-bit-about-fsmo-roles)
+* [Configuring DNS](#configuring-dns)
+* [Breaking DNS](#intentionally-breaking-dns-and-fixing)
+* [Creating OU Structure](#creating-ou-structure)
+* [Creating Security Groups](#creating-security-groups)\
 
 # Documentation
 ## Network Diagram
