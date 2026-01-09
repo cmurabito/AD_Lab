@@ -262,3 +262,58 @@ Then, we need to right click on our domain, select new, then organizational unit
 From here, we are going to create an organizational unit called "LAB_Enterprises" and create organizational units within that one for each department, and role, making sure we separate users and computers from each other. Many different IT teams in the real world will have different ways of going about this, but for the purpose of this lab this is how we will go about it.
 
 <img width="1018" height="756" alt="Screenshot 2026-01-02 153233" src="https://github.com/user-attachments/assets/8143842a-1953-49d3-a96d-1b5c60b52669" />
+
+## Creating Security Groups
+Security groups are essential for AD and will simplify the process of doing things such as assigning permissions to access specific network folders. What a security group does is group users into one group so that you can more effectively apply policy. Let's go ahead and create some groups, which we will do by department. First we are going to navigate to the "Tools" section, and then select "Active Directory Users and Computers".
+
+<img width="1017" height="761" alt="Screenshot 2026-01-08 190352" src="https://github.com/user-attachments/assets/d4274cc3-f7be-4acb-80d5-556b71dca09f" />
+
+Then within "Users", we will right click and select "New" and then "Group".
+
+<img width="1023" height="791" alt="Screenshot 2026-01-08 190424" src="https://github.com/user-attachments/assets/682cf019-60cb-4060-854f-7922f80aa1eb" />
+
+This will bring us to a section where we can specify the name of this group. This one will be called "Human Resources" and we will make one for every other department as well. In this section you will see "group scope" and the options "Domain Local", "Global", and "Universal". I will take a second to explain these. "Domain Local" means you would be creating a scope for that domain and that domain only. "Global" would mean that you would create a scope for every domain that you have, and "Universal" is suited for if you had multiple companies that you were managing that each had their own forests and respective domains. We are going to stick to "Global" since we only have one domain.
+
+<img width="1018" height="766" alt="Screenshot 2026-01-08 190453" src="https://github.com/user-attachments/assets/6be2319f-461e-4e50-906c-554d3e023183" />
+
+If we now double click on a group, we can select "Members" at the top of the properties screen and add users to this group. We'll do this for each one of our departments.
+
+<img width="1013" height="761" alt="Screenshot 2026-01-08 190732" src="https://github.com/user-attachments/assets/a41e641e-1d96-49da-bf65-bdb04bfb54be" />
+
+Jason Bourne and Tyler Roberts in the Information Technology group
+
+<img width="1017" height="764" alt="Screenshot 2026-01-08 190748" src="https://github.com/user-attachments/assets/7ca2b171-5118-48d3-b7ef-3e9a9f7e41be" />
+
+Karen and John Smith in the Human Resources group
+
+<img width="1019" height="765" alt="Screenshot 2026-01-08 190833" src="https://github.com/user-attachments/assets/c3c3cdd9-190d-469d-a3e8-e5c3a140e954" />
+
+Hayley Williams and Brett Childers in the Sales group
+
+<img width="1023" height="765" alt="Screenshot 2026-01-08 190903" src="https://github.com/user-attachments/assets/c4e82da4-95fa-4d4d-adaa-5f2f89d2483c" />
+
+Also, since we are already in here, we will move our users to their respective locations in the OUs that we created in the last section.
+
+<img width="1017" height="763" alt="Screenshot 2026-01-08 191235" src="https://github.com/user-attachments/assets/9a911c93-f7f1-4314-b150-f652ed1b8929" />
+
+So now what kind of things can we do with these security groups? Well if we create a folder named "HR" or any other folder that a department or members of the company might need access to, then we can assign these security groups to that respective folder's sharing permissions. This allows us to customize who can access what within our Lab. We'll go ahead and do that now. First we will create an "HR" folder.
+
+<img width="1021" height="768" alt="Screenshot 2026-01-08 191608" src="https://github.com/user-attachments/assets/cefe37be-0259-442f-9300-d743d2b2dda7" />
+
+Then we will right click on that folder and select properties as well as click on "Share..." within the "Sharing" tab.
+
+<img width="1022" height="766" alt="Screenshot 2026-01-08 191639" src="https://github.com/user-attachments/assets/19966db8-3bfa-47bf-81f3-26ba13a0b1ec" />
+
+In the dropdown, we can select "Find People..." and enter in "Human Resources". Don't forget to click on "Check Names"! You will see it underlined when it has checked. We can then hit ok.
+
+<img width="1019" height="765" alt="Screenshot 2026-01-08 191713" src="https://github.com/user-attachments/assets/95857e96-476f-4daa-aa4f-2df70367d3de" />
+
+You'll now see it populated with the "Human Resources" group, this tells us that the users in that respective group will be able to access this folder with Read/Write permissions!
+
+<img width="1023" height="766" alt="Screenshot 2026-01-08 191736" src="https://github.com/user-attachments/assets/10bd3528-3b07-41e1-91c5-bfba47ccb9c5" />
+
+
+
+
+
+
