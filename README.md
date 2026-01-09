@@ -14,7 +14,7 @@ The purpose of this repository is to document my progress towards mastering Acti
 * [Configuring DNS](#configuring-dns)
 * [Breaking DNS](#intentionally-breaking-dns-and-fixing)
 * [Creating OU Structure](#creating-ou-structure)
-* [Creating Security Groups](#creating-security-groups)\
+* [Creating Security Groups](#creating-security-groups)
 
 # Documentation
 ## Network Diagram
