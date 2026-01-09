@@ -1,13 +1,13 @@
 # AD_Lab
 The purpose of this repository is to document my progress towards mastering Active Directory and Windows Server. Hyper-V will be used as the hypervisor of choice during this process. I will be updating my progress below.
 # Table of Contents
-* [Network Diagram](Network-Diagram)
-* [Initial Setup](Setting-Up-Windows-Server-VM-Within-Hyper-V)
-* [Configuring Networking](Configuring-Networking)
-* [Installing AD DS](Installing-Active-Directory-DS)
-* [Changing Server Name](Changing-Server-Name)
-* [Enabling DHCP](Enabling-DHCP)
-* [Preventing Future DNS Issues](Preventing-Future-DNS-Issues)
+* [Network Diagram](network-diagram)
+* [Initial Setup](setting-up-windows-server-vm-within-hyper-v)
+* [Configuring Networking](configuring-networking)
+* [Installing AD DS](installing-active-directory-ds)
+* [Changing Server Name](changing-server-name)
+* [Enabling DHCP](enabling-dhcp)
+* [Preventing Future DNS Issues](preventing-future-dns-issues)
 
 # Documentation
 ## Network Diagram
