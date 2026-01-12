@@ -15,6 +15,7 @@ The purpose of this repository is to document my progress towards mastering Acti
 * [Breaking DNS](#intentionally-breaking-dns-and-fixing)
 * [Creating OU Structure](#creating-ou-structure)
 * [Creating Security Groups](#creating-security-groups)
+* [AGDLP](#agdlp)
 
 # Documentation
 ## Network Diagram
@@ -326,6 +327,27 @@ In the dropdown, we can select "Find People..." and enter in "Human Resources". 
 You'll now see it populated with the "Human Resources" group, this tells us that the users in that respective group will be able to access this folder with Read/Write permissions!
 
 <img width="1023" height="766" alt="Screenshot 2026-01-08 191736" src="https://github.com/user-attachments/assets/10bd3528-3b07-41e1-91c5-bfba47ccb9c5" />
+
+## AGDLP
+The AGDLP model is a best practice approach for managing user permissions in Active Directory. Its important that we use this model when we create our security groups because of a few things. The benefits include simplified management, improved security, scalability, consistency, and for simplified auditing. So what does AGDLP stand for? It stands for Account, Global Group, Domain Local Group, Local Group, Permissions. Our user accounts will be assigned to global groups, which will be assigned to domain local groups, and then assigned the necessary permissions. This is how we implement this model. First, we'll open "Active Directory Users and Computers", right click within "Users", then select "New" and "Group". We are going to name this group "HR_Folder_RW" which tells us it is for the HR folder and will be for read/write permissions, and we will select "Domain Local".
+
+<img width="1015" height="763" alt="Screenshot 2026-01-09 220509" src="https://github.com/user-attachments/assets/284d4956-bdf1-457b-b77d-a1e6e96e9ef8" />
+
+Now we need to add our HR global group as a member of this group. This is done by opening our newly created security group's properties, clicking on "Add", and then typing in "Human Resources", clicking on "Check Names", and then "Ok".
+
+<img width="1015" height="760" alt="Screenshot 2026-01-11 201637" src="https://github.com/user-attachments/assets/3cff8ff6-a638-4042-a0c5-71352290a3c3" />
+
+We are going to go ahead and do this for all three of our departments, as they will all have their own folder that they can utilize. Once thats done, we can go into the respective folder's properties, and into "Advanced" underneath the "Security" tab, and assign our domain local groups as we see fit to their shared folders. This will allow all the users in our global group to have access to the specific resource that our domain local group does.
+
+<img width="1014" height="766" alt="Screenshot 2026-01-09 221022" src="https://github.com/user-attachments/assets/bf46c358-d7dd-40c4-9d66-3ba46fef354d" />
+
+We can hit "Add", then type in the name of the domain local group, and hit "Check Names", then "Ok".
+
+<img width="1017" height="760" alt="Screenshot 2026-01-09 221052" src="https://github.com/user-attachments/assets/dac83767-cf27-42c9-8525-dc781f9ea751" />
+
+We can now see that our domain local group we created now has permissions for that folder, and the AGDLP model has been applied to our server!
+
+<img width="1015" height="759" alt="Screenshot 2026-01-09 221207" src="https://github.com/user-attachments/assets/572a916d-2b83-4b7f-b5c1-a4f0b7d98959" />
 
 
 
