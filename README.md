@@ -1,5 +1,5 @@
 # AD_Lab
-The purpose of this repository is to document my progress towards mastering Active Directory and Windows Server. Hyper-V will be used as the hypervisor of choice during this process. I will be updating my progress below.
+The purpose of this repository is to document my progress in my Active Directory homelab. Hyper-V will be utilized as the hypervisor of choice during this process. Progress will constantly be updated below along with a table of contents for easier navigation.
 # Table of Contents
 * [Network Diagram](#network-diagram)
 * [Initial Setup](#setting-up-windows-server-vm-within-hyper-v)
