@@ -16,6 +16,8 @@ The purpose of this repository is to document my progress in my Active Directory
 * [Creating OU Structure](#creating-ou-structure)
 * [Creating Security Groups](#creating-security-groups)
 * [AGDLP](#agdlp)
+* [Delegation](#delegation)
+* [Password Policy and Account Lockout](#password-policy-and-account-lockout)
 
 # Documentation
 ## Network Diagram
@@ -348,6 +350,93 @@ We can hit "Add", then type in the name of the domain local group, and hit "Chec
 We can now see that our domain local group we created now has permissions for that folder, and the AGDLP model has been applied to our server!
 
 <img width="1015" height="759" alt="Screenshot 2026-01-09 221207" src="https://github.com/user-attachments/assets/572a916d-2b83-4b7f-b5c1-a4f0b7d98959" />
+
+## Delegation
+One thing that we might like to do in a production environment is delegate certain controls. For example, for something as simple as a password reset, we might want to delegate that to the helpdesk. Here's how we can do that. First we will need to create a security group that we are going to name "Helpdesk_Pass_Reset" within our newly created "Security Groups" OU.
+
+<img width="1018" height="764" alt="Screenshot 2026-01-13 190244" src="https://github.com/user-attachments/assets/ffc45769-d828-4413-9793-3933fd5e0ee7" />
+
+We will then right click on our "Sales" OU and select "Delegate Control". This will bring us into the "Delegation of Control Wizard".
+
+<img width="1020" height="761" alt="Screenshot 2026-01-13 190353" src="https://github.com/user-attachments/assets/020a2431-842b-4339-85ad-4209305424ac" />
+
+We will then type in "Helpdesk_Pass_Reset" and hit "Check Names".
+
+<img width="1021" height="768" alt="Screenshot 2026-01-13 190414" src="https://github.com/user-attachments/assets/02683baf-440d-4dda-83f3-26255c0b282c" />
+
+This will bring us into a "Tasks to delegate" menu. We will select the option "Reset user passwords and force password change at next logon."
+
+<img width="1018" height="762" alt="Screenshot 2026-01-13 190434" src="https://github.com/user-attachments/assets/7f510038-4191-46bd-b976-daef1dd66e2c" />
+
+After doing the above steps we will repeat them for our "HR" OU. Because we wouldn't want IT employees changing each other's passwords and leave that solely up to the admin, we will not do this for the "IT" OU. We will also want to add the "Information Technology" security group into the "Helpdesk_Pass_Reset" group we just created.
+
+<img width="1020" height="764" alt="Screenshot 2026-01-13 190634" src="https://github.com/user-attachments/assets/026c761d-786d-42c1-9815-aeedcdd52c07" />
+
+We can verify that our newly created security group has those permissions by going into the advanced security settings for the OU's that were made members for our said security group and look within the "Permissions" tab.
+
+<img width="1022" height="754" alt="Screenshot 2026-01-13 190807" src="https://github.com/user-attachments/assets/5bc50803-36f3-4844-a65a-1e0f6ec9e315" />
+
+Now members of our IT team should have the permission to reset passwords for any of our employees!
+
+## Password Policy and Account Lockout
+Another thing we are going to want to configure is a strong password policy and account lockout settings to help to prevent possible brute force attacks on our users. For our password policy, we are going to be configuring it so our users need at least 12 characters, with a password change every 30 days, as well as meeting complexity requirements. After 4 invalid logon attempts, we want their account to "lock out" after 4. Here's how we can do that. First we are going to open up "Group Policy Management" within the "Tools" tab.
+
+<img width="1023" height="764" alt="Screenshot 2026-01-13 190952" src="https://github.com/user-attachments/assets/f69dde4a-09cf-4ebd-a247-e43e2016f36b" />
+
+Once this is opened, we can go to "Forest" -> "Domains" -> "Lab.local" -> "Default Domain Policy", then go into "Settings" under that and scroll down to see our current password policy.
+
+<img width="1018" height="761" alt="Screenshot 2026-01-13 191630" src="https://github.com/user-attachments/assets/fa7c750d-4e04-4451-974b-c0324f2218fa" />
+
+If we right click on "Default Domain Policy" and click on "Edit", then it will bring us into the policy editor where we can make changes. You will see two sections here, Computer Configuration and User Configuration. Computer Configuration are settings that manage the workstation, while User Configuration is made up of settings that affect users. You will also notice the tabs Policies and Preferences. Policies are enforced settings while Preferences are settings that can be changed. For our password policy, we do not want this to be messed with, and it will affect the whole workstation, so we need to select "Computer Configuration" and "Policies".
+
+<img width="1024" height="767" alt="Screenshot 2026-01-13 191643" src="https://github.com/user-attachments/assets/a0016588-9ad2-4574-a07d-c4ac503ff978" />
+
+We will then need to navigate to "Windows Settings" -> "Security Settings" -> "Account Policies". In that section, you will see "Password Policy", "Account Lockout Policy", and "Kerberos Policy". We will only configure the first two, so let's start with "Password Policy".
+
+<img width="1020" height="762" alt="Screenshot 2026-01-13 191720" src="https://github.com/user-attachments/assets/d3ff3e78-10db-40cc-bc0b-c70e842551a6" />
+
+Within this menu we can right click on each setting and change it to what we desire it to be changed to. We will go with the settings we discussed in the beginning of this section.
+
+<img width="1020" height="760" alt="Screenshot 2026-01-13 192234" src="https://github.com/user-attachments/assets/c513b682-11e6-48ff-a30a-a602543e3f22" />
+
+We can then move on to "Account Lockout Policy" and configure the settings there as well. After defining a number of invalid logon attempts, it will automatically change the duration and lockout counter. We will leave those at 30 minutes.
+
+<img width="1019" height="764" alt="Screenshot 2026-01-13 192354" src="https://github.com/user-attachments/assets/6b976777-f287-4884-baf5-122765aa0fbb" />
+
+We then need to right click on the "Domain Controllers" OU in the management console and select "Group Policy Update".
+
+<img width="1020" height="760" alt="Screenshot 2026-01-13 192506" src="https://github.com/user-attachments/assets/6702a539-374d-4155-b2f6-a2d96fd6facd" />
+
+After this finishes, we can hit "Close".
+
+<img width="1019" height="763" alt="Screenshot 2026-01-13 192517" src="https://github.com/user-attachments/assets/a7b343e0-f7b7-4f50-ace1-c10627bf6497" />
+
+And a quick refresh will show our new settings are updated.
+
+<img width="1018" height="765" alt="Screenshot 2026-01-13 192653" src="https://github.com/user-attachments/assets/05455bf5-caac-4277-941c-cee2c57fc7ed" />
+
+To test our lockout policy, we can log onto our client VM and attempt to enter a wrong password one too many times. A lockout error will confirm our policy is active.
+
+<img width="1025" height="766" alt="Screenshot 2026-01-14 192436" src="https://github.com/user-attachments/assets/0204e421-042b-450b-bdfa-2262c8c95ecc" />
+
+We can also test our password policy by attempting to change the pass of a user to something that does not meet the requirements. If you get an error, your policy is working as intended.
+
+<img width="1018" height="762" alt="Screenshot 2026-01-14 192535" src="https://github.com/user-attachments/assets/54584afa-c628-4f3e-aad8-80284fbdac29" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
