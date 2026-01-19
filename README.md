@@ -18,6 +18,7 @@ The purpose of this repository is to document my progress in my Active Directory
 * [AGDLP](#agdlp)
 * [Delegation](#delegation)
 * [Password Policy and Account Lockout](#password-policy-and-account-lockout)
+* [GPOs](#gpos)
 
 # Documentation
 ## Network Diagram
@@ -423,23 +424,58 @@ We can also test our password policy by attempting to change the pass of a user 
 
 <img width="1018" height="762" alt="Screenshot 2026-01-14 192535" src="https://github.com/user-attachments/assets/54584afa-c628-4f3e-aad8-80284fbdac29" />
 
+## GPOs
+Group Policy Objects(or GPOs for short) are a means by which we can customize settings, run scripts, or adjust security settings across our domain. We have a few that we want to go ahead and set for this Lab, those are going to be forcing screen lock after a specified period of inactivy, disabling USB devices, and creating a User Account Control policy. Let's dive into it, first we need to open group policy management.
 
+<img width="1021" height="765" alt="Screenshot 2026-01-17 213551" src="https://github.com/user-attachments/assets/e349032b-64a4-4e6f-864e-100bd077a1d6" />
 
+Then within "LAB_Enterprises", we want to right click, and select create a GPO in this domain and link it here.
 
+<img width="1019" height="766" alt="Screenshot 2026-01-17 213625" src="https://github.com/user-attachments/assets/8b149fc5-5949-402a-b3a4-33f2f077409f" />
 
+We're going to name it "Force Screen Lock" and right click on it and select edit. We always want to name our GPOs something that is in reference to what they actually do.
 
+<img width="1019" height="763" alt="Screenshot 2026-01-17 213715" src="https://github.com/user-attachments/assets/c36b20f9-a856-4f84-ac91-805cad44f822" />
 
+When the group policy management editor pops up, we then want to go "Computer Configuration" -> "Policies" -> "Windows Settings" -> "Security Settings" -> "Local Policies" -> "Security Options". Within "Security Options", there should be a setting named "Machine Inactivity Limit". We will go ahead and right click on that, select "Properties", and check the "Define this Policy Setting" box, and enter 600 seconds in the input field. This will make it so that after ten minutes of inactivty, the screen saver will be triggered and force a screen lock. Upon sensing any activity afterward, it will prompt the user to log back in. 
 
+<img width="1021" height="763" alt="Screenshot 2026-01-17 214115" src="https://github.com/user-attachments/assets/9877f798-a49f-4f4c-ab9b-9b25c012bf53" />
 
+Now that that is done, we can update our group policy and test it out. After updating the group policy and testing it myself, I can assure you it works on my end. Remember to also right click on the policy you just made and select "Enforced".
 
+<img width="216" height="243" alt="Screenshot 2026-01-17 223222" src="https://github.com/user-attachments/assets/d47a223b-174d-46fb-b846-3e594e6ac31d" />
 
+We'll now create a USB Restriction Policy, so that USB devices can not be plugged into client computers. This helps prevent any unauthorized software or malicious code running on client machines and is essential for security reasons. 
 
+<img width="1018" height="769" alt="Screenshot 2026-01-17 223634" src="https://github.com/user-attachments/assets/079e4c7d-55e8-4b2e-9ac8-0959cf10b149" />
 
+The setting we are searching for is named "All Removable Storage Classes:Deny all Access", and it is located under "Computer Configuration" -> "Windows Settings" -> "Administrative Templates" -> "System" -> "Removable Storage Access".
 
+<img width="1015" height="748" alt="Screenshot 2026-01-17 224059" src="https://github.com/user-attachments/assets/2fdb2bc2-8f75-492f-a3a7-13851e041bac" />
 
+We will enforce this as well.
 
+<img width="1018" height="760" alt="Screenshot 2026-01-17 224330" src="https://github.com/user-attachments/assets/28919bbc-04e7-4465-8130-0d3acacccedf" />
 
+The next policy is "User Account Control", this setting will be enforced to prompt standard users for an administrator's credentials when attempting to install software or change settings that require administrator privileges. This is important for security as well.
 
+<img width="1021" height="763" alt="Screenshot 2026-01-17 224724" src="https://github.com/user-attachments/assets/45766ca7-a6de-47d5-b8d3-bbd9b27db712" />
 
+It will be located under "Computer Configuration" -> "Policies" -> "Windows Settings" -> "Security Settings" -> "Local Policies" -> "Security Options". There are three that we will enable, the first setting being "Detect application installations and prompt for elevation".
 
+<img width="1019" height="763" alt="Screenshot 2026-01-17 224907" src="https://github.com/user-attachments/assets/a535a94d-d932-461c-bc32-c7037c1e8a9e" />
+
+The second being "Behavior of the elevation prompt for standard users" which we will change to "Prompt for credentials".
+
+<img width="1018" height="761" alt="Screenshot 2026-01-17 225237" src="https://github.com/user-attachments/assets/fa58c9ca-455d-4bdf-b3da-b13cc5562675" />
+
+The third being "Run all administrators in Admin Approval Mode".
+
+<img width="1020" height="764" alt="Screenshot 2026-01-17 225602" src="https://github.com/user-attachments/assets/19af6179-3fbd-4dcd-9efb-909ad624b917" />
+
+So how do these GPOs actually work? GPOs are created inside of a domain and linked to organizational units. Thus any OUs within what they are linked to will also inherit them. This brings us to the problem of conflicting GPOs. For example purposes, I have created a "Disable Display" GPO and an "Enable Display" GPO. "Disable Display" is linked to "Lab_Enterprises" while "Enable Display" is linked to the "IT" OU within its parent OU. So which GPO's settings do you think will apply?
+
+<img width="415" height="558" alt="Screenshot 2026-01-19 120814" src="https://github.com/user-attachments/assets/17a01109-4eaa-4b18-a11a-517a2e244b6d" />
+
+The child item will always inherit from the parent item. So any GPOs we have defined in "LAB_Enterprises" will also be defined in "IT", and their settings will come before the child GPO's settings. We can override this in two ways, the first is using the "Block Inheritance" feature, which allows us to stop any inheritance completely. This could cause issues though considering that the "Default Domain Policy" is inherited. The second way is to enforce the GPO that we created there for IT, "Enable Display", so that it takes precedence before "Disable Display".
 
