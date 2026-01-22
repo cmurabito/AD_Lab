@@ -19,7 +19,7 @@ The purpose of this repository is to document my progress in my Active Directory
 * [Delegation](#delegation)
 * [Password Policy and Account Lockout](#password-policy-and-account-lockout)
 * [GPOs](#gpos)
-* [GPResult/RSOP.msc](#gpresult/rsop.msc)
+* [GPResult/RSOP.msc](#gpresultrsopmsc)
 
 # Documentation
 ## Network Diagram
