@@ -19,6 +19,7 @@ The purpose of this repository is to document my progress in my Active Directory
 * [Delegation](#delegation)
 * [Password Policy and Account Lockout](#password-policy-and-account-lockout)
 * [GPOs](#gpos)
+* [GPResult/RSOP.msc](#gpresult/rsop.msc)
 
 # Documentation
 ## Network Diagram
@@ -478,4 +479,39 @@ So how do these GPOs actually work? GPOs are created inside of a domain and link
 <img width="415" height="558" alt="Screenshot 2026-01-19 120814" src="https://github.com/user-attachments/assets/17a01109-4eaa-4b18-a11a-517a2e244b6d" />
 
 The child item will always inherit from the parent item. So any GPOs we have defined in "LAB_Enterprises" will also be defined in "IT", and their settings will come before the child GPO's settings. We can override this in two ways, the first is using the "Block Inheritance" feature, which allows us to stop any inheritance completely. This could cause issues though considering that the "Default Domain Policy" is inherited. The second way is to enforce the GPO that we created there for IT, "Enable Display", so that it takes precedence before "Disable Display".
+
+## GPResult/RSOP.msc
+GPResult and RSOP.msc are both tools that show the effective group policy information applied to a user or computer. They can be useful when troubleshooting why a policy did or did not apply and comparing policy results between users or computers. The main difference between them is GPResult is a command line interface while RSOP.msc is a graphical interface. Let's go ahead and dive into these. First we are going to want to create a GPO named "Allow Remote Administration Exception". This GPO will allow us to open specific firewall exceptions to manage computers remotely. Since we already went over creating GPOs in the last section, I will not go over how to do this again and if you are reading this and would like to copy me, then a quick google search on where this policy setting is located will help you out. After this is done, we'll open command prompt, and we can type "gpresult" to get a help page on this command.
+
+<img width="979" height="510" alt="Screenshot 2026-01-20 194034" src="https://github.com/user-attachments/assets/4a51b74f-e6a6-4fdb-a88a-4ff9d1b66c60" />
+
+We can get policies applied to a specific user by using these flags, while also saving the output in an html format for easy reading.
+
+<img width="652" height="81" alt="Screenshot 2026-01-20 194410" src="https://github.com/user-attachments/assets/691f5532-c5c7-4cc5-9a91-9a6e06b476ac" />
+
+We can also get policies applied to specific computers as well. To do this we can use these flags down below.
+
+<img width="911" height="78" alt="Screenshot 2026-01-20 194843" src="https://github.com/user-attachments/assets/2b45b158-05b7-487b-98b6-c15855b24f47" />
+
+We can open these html files wherever we saved them, in this case our html file is located in our administrator profile folder. If we go ahead and open that, we can see which specific policies are applied to the computer in question, the details of said computer, etc.
+
+<img width="1019" height="726" alt="Screenshot 2026-01-20 201518" src="https://github.com/user-attachments/assets/286751f3-1c8b-4597-9a57-68168b05652e" />
+
+If we wanted to use RSOP.msc instead, all we have to do is open Group Policy Management, right click on "Group Policy Results", and open up the "Group Policy Results Wizard". 
+
+<img width="751" height="550" alt="Screenshot 2026-01-20 201641" src="https://github.com/user-attachments/assets/b9337b2b-64f7-4df6-933e-f179d2a59f1b" />
+
+We can click through this wizard and select "Another computer:" and type in the name of the system we want to pull the resultant set of policy from.
+
+<img width="515" height="453" alt="Screenshot 2026-01-20 201741" src="https://github.com/user-attachments/assets/5d9c1bcd-86fc-4488-b12e-2a74e85e41d1" />
+
+We can then select a user on that computer to display policy results for.
+
+<img width="518" height="459" alt="Screenshot 2026-01-20 201755" src="https://github.com/user-attachments/assets/47f74948-4d3b-4466-bc96-39e0aeff899e" />
+
+After this we click through the wizard and we'll arrive back in the Group Policy Management console and be able to interact with our results.
+
+<img width="742" height="511" alt="Screenshot 2026-01-20 201828" src="https://github.com/user-attachments/assets/2955feb8-17d4-4f6e-9d0a-0ec710c546c3" />
+
+
 
