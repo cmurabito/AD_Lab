@@ -20,6 +20,7 @@ The purpose of this repository is to document my progress in my Active Directory
 * [Password Policy and Account Lockout](#password-policy-and-account-lockout)
 * [GPOs](#gpos)
 * [GPResult/RSOP.msc](#gpresultrsopmsc)
+* [File Services](#file-services)
 
 # Documentation
 ## Network Diagram
@@ -512,6 +513,95 @@ We can then select a user on that computer to display policy results for.
 After this we click through the wizard and we'll arrive back in the Group Policy Management console and be able to interact with our results.
 
 <img width="742" height="511" alt="Screenshot 2026-01-20 201828" src="https://github.com/user-attachments/assets/2955feb8-17d4-4f6e-9d0a-0ec710c546c3" />
+
+## File Services
+Another essential service that we can implement into our environment is a deployed file server. This will allow users across departments to effectively collaborate on their work. In order to do this, we are going to need to setup a file server. We will go through Hyper-V, create a new virtual machine, and configure a file server. I already have one started through Hyper-V, and have the name and IP address configured below.
+
+<img width="1020" height="767" alt="Screenshot 2026-01-24 123337" src="https://github.com/user-attachments/assets/c32c2f60-7416-4500-be89-ba5a911b45e9" />
+
+We are going to want to join this server to the domain, we can do that underneath the computer name settings. We will enter the name of our domain, "Lab.local".
+
+<img width="1024" height="765" alt="Screenshot 2026-01-24 123548" src="https://github.com/user-attachments/assets/325635a5-30f9-4c62-8815-713879cce60e" />
+
+We will then go into the "Add Roles and Features" wizard, and select "File Server" underneath "File and Storage Services".
+
+<img width="1015" height="759" alt="Screenshot 2026-01-24 123846" src="https://github.com/user-attachments/assets/e0568509-996e-412c-ae91-fbd126a10a35" />
+
+When I originally created the server within Hyper-V, I did not partition the drive correctly, which was fixed by going into Disk Management and shrinking the main partition, and then creating a new simple volume.
+
+<img width="1020" height="761" alt="Screenshot 2026-01-24 124441" src="https://github.com/user-attachments/assets/57454c5c-e276-4ff7-b2d3-5bed93c35636" />
+
+I then structured folders within a folder named "Share" like so.
+
+<img width="1018" height="761" alt="Screenshot 2026-01-24 124730" src="https://github.com/user-attachments/assets/ae427b37-58f2-432e-8336-99f998058b2d" />
+
+Then within the share permissions, I added the local security groups from each department. You can configure this however you need depending on your security standards.
+
+<img width="1019" height="762" alt="Screenshot 2026-01-24 125503" src="https://github.com/user-attachments/assets/c408af55-eb85-4beb-8f02-2ca3eeba1778" />
+
+Within security settings, I also added the local security groups as well and configured permissions so that they could read and write and modify the folder. Again, this may vary depending on the company/organization that you work for.
+
+<img width="1018" height="765" alt="Screenshot 2026-01-24 125725" src="https://github.com/user-attachments/assets/5dfcbf75-dd08-466b-8c84-aa5095d5b870" />
+
+We can then test to see if our configuration works. For this example I am logged in under John Smith, one of the users that is part of the HR department.
+
+<img width="449" height="74" alt="Screenshot 2026-01-24 130355" src="https://github.com/user-attachments/assets/224d5c5d-446b-46d7-9670-c5fc0f5f1eba" />
+
+If we type in "\\FS01\HR" we get a valid connection to our folder.
+
+<img width="1023" height="762" alt="Screenshot 2026-01-24 130439" src="https://github.com/user-attachments/assets/79f7fc1e-35e9-4c25-96d0-406c3fb39c01" />
+
+But if we try to access another department's folder, let's say IT in this example, we get something different.
+
+<img width="1018" height="763" alt="Screenshot 2026-01-24 130514" src="https://github.com/user-attachments/assets/668a5f29-25c3-469d-bc95-9bfeb59a2757" />
+
+This is good because it means that we can not access a folder we're not supposed to have access to. We can further configure this though. We do not want users to have to type in the locations of folders in file explorer, infact, we want them to already have it mapped as a drive. In order to do this we will need to configure group policy. Over on the domain controller, we can open group policy management and select a department and create/link a gpo to that OU.
+
+<img width="1022" height="767" alt="Screenshot 2026-01-24 131541" src="https://github.com/user-attachments/assets/995fbca7-dcac-486a-90c4-8f23530afee3" />
+
+For this example we can name it "Map - HR Drive (H:)".
+
+<img width="1024" height="760" alt="Screenshot 2026-01-24 131618" src="https://github.com/user-attachments/assets/d6ab579a-1077-4c0d-bdf5-dba0f556e009" />
+
+Then within that GPO, if we go into "User Configuration" -> "Preferences" -> "Windows Settings" -> "Drive Maps", we can map a new drive.
+
+<img width="1020" height="765" alt="Screenshot 2026-01-24 131653" src="https://github.com/user-attachments/assets/a915e43b-66f6-4a34-b088-198048e8b4b4" />
+
+We can open up the "New Drive Properties" menu, select our action as "Create", specify the location of the folder we want to map as a drive, label it as "HR", and select our chosen drive letter.
+
+<img width="830" height="592" alt="Screenshot 2026-01-24 131922" src="https://github.com/user-attachments/assets/d92093fb-bd34-4a9b-9058-fb060252c8b6" />
+
+Then we will go into the "Common" tab, and check "Item level targeting". We will then hit the "Targeting..." button.
+
+<img width="1017" height="762" alt="Screenshot 2026-01-24 132005" src="https://github.com/user-attachments/assets/4c66d1e8-305e-4a00-9d10-4b92351de4a1" />
+
+Underneath here we will hit "New Item", and "Security Group".
+
+<img width="1018" height="755" alt="Screenshot 2026-01-24 132017" src="https://github.com/user-attachments/assets/8d39fe91-f448-4c81-82fe-26d29b617125" />
+
+All we have to do here is specify the group and make sure that "User in Group" is selected.
+
+<img width="1015" height="768" alt="Screenshot 2026-01-24 132101" src="https://github.com/user-attachments/assets/1189c49a-2c5e-47c5-ab3c-818bf433e8f2" />
+
+We can test if this works by logging on again as a user within that group and opening up the file explorer. If this is configured correctly then your new mapped drive should show!
+
+<img width="1017" height="765" alt="Screenshot 2026-01-24 132647" src="https://github.com/user-attachments/assets/2be276f1-5f4f-481d-ab0d-d62e22bd67a4" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
