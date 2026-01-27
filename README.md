@@ -21,6 +21,7 @@ The purpose of this repository is to document my progress in my Active Directory
 * [GPOs](#gpos)
 * [GPResult/RSOP.msc](#gpresultrsopmsc)
 * [File Services](#file-services)
+* [Deploying MSI Software via GPO](#deploying-msi-software-via-gpo)
 
 # Documentation
 ## Network Diagram
@@ -586,6 +587,54 @@ All we have to do here is specify the group and make sure that "User in Group" i
 We can test if this works by logging on again as a user within that group and opening up the file explorer. If this is configured correctly then your new mapped drive should show!
 
 <img width="1017" height="765" alt="Screenshot 2026-01-24 132647" src="https://github.com/user-attachments/assets/2be276f1-5f4f-481d-ab0d-d62e22bd67a4" />
+
+## Deploying MSI Software via GPO
+One of the things we might want to do in our organization is have the ability to mass deploy software for our employees. Most organizations have some sort of software that everybody uses, whether that be Teams, Adobe, etc.. We can easily configure this through Group Policy. First we'll create a new domain local security group named "Software_Install". In a real world scenario you might want to be more specific with this, but for lab purposes this is what we will leave it as.
+
+<img width="1020" height="762" alt="Screenshot 2026-01-27 133638" src="https://github.com/user-attachments/assets/7fce2e50-f1d1-47f6-a306-38bb719cad06" />
+
+We have also created another global group known as "IT_Computers". We have selected our VM and made sure that it is a member of this group.
+
+<img width="1020" height="766" alt="Screenshot 2026-01-27 141119" src="https://github.com/user-attachments/assets/cd4a6a52-39bc-4034-8b1d-bf35526d1d24" />
+
+Over on our file server, we will need to create a folder that we are going to name "Software$". The "$" will ensure that this folder remains hidden. You will need to place the MSI file of your choice within this share folder. I have already done that. We will add our new domain local group to this share, and ensure that we remove "everyone" from the sharing tab in the folder's properties. We will also add our new domain local group within "security".
+
+<img width="1021" height="761" alt="Screenshot 2026-01-27 133946" src="https://github.com/user-attachments/assets/f1a9a15e-8e8b-47e9-8db4-38fef25833ef" />
+
+After this, we will open up group policy management on our domain and create a new policy underneath "LAB_Enterprises". The name for this policy is going to be "Software_Install".
+
+<img width="1021" height="765" alt="Screenshot 2026-01-27 134307" src="https://github.com/user-attachments/assets/d91139e7-1481-4c72-9e0e-5018b98d3619" />
+
+We can then navigate to "Computer Configuration" -> "Policies" -> "Software Settings" -> "Software Installation".
+
+<img width="1020" height="758" alt="Screenshot 2026-01-27 134351" src="https://github.com/user-attachments/assets/0d1659bc-2428-4366-92c5-0a7737036932" />
+
+We'll right click and select "New", then navigate to our folder on our file server. The path for this will be "\\192.168.10.15\Software$". We will then select the MSI file we want to install.
+
+<img width="1021" height="763" alt="Screenshot 2026-01-27 134423" src="https://github.com/user-attachments/assets/cc4513f0-42b6-4a98-9bca-96b9dc8feefa" />
+
+We will keep it as "Assigned", and then hit ok.
+
+<img width="1018" height="765" alt="Screenshot 2026-01-27 134443" src="https://github.com/user-attachments/assets/0fde8822-e847-425d-8fa0-cf08ab4d7842" />
+
+Then we will right click on our installer, and navigate to it's properties. Underneath "Deployment", we will select to "Uninstall this application when it falls out of the scope of management." This will uninstall the application if the computer one day no longer becomes managed by us. Hit "Apply" and then "OK".
+
+<img width="1018" height="766" alt="Screenshot 2026-01-27 134533" src="https://github.com/user-attachments/assets/2c98a644-f28d-4908-8521-3ae620977e79" />
+
+We can test our configuration by logging onto that computer. Run a "gpupdate /force" and it will run through some dialogue before asking us if we want to restart. We will type "y" here for yes and it will reboot the machine. 
+
+<img width="1020" height="767" alt="Screenshot 2026-01-27 135518" src="https://github.com/user-attachments/assets/35ee0759-8395-4879-93ce-3e965fa02b61" />
+
+When it reboots, log back in. As we can see, when the sign in process completes, the teams loader pops up on the screen. This means that our configuration works as intended!
+
+<img width="1022" height="760" alt="Screenshot 2026-01-27 141030" src="https://github.com/user-attachments/assets/5c3656be-d447-4997-9932-9784b13250d5" />
+
+
+
+
+
+
+
 
 
 
