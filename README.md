@@ -22,6 +22,7 @@ The purpose of this repository is to document my progress in my Active Directory
 * [GPResult/RSOP.msc](#gpresultrsopmsc)
 * [File Services](#file-services)
 * [Deploying MSI Software via GPO](#deploying-msi-software-via-gpo)
+* [Loopback Processing](#loopback-processing)
 
 # Documentation
 ## Network Diagram
@@ -629,15 +630,44 @@ When it reboots, log back in. As we can see, when the sign in process completes,
 
 <img width="1022" height="760" alt="Screenshot 2026-01-27 141030" src="https://github.com/user-attachments/assets/5c3656be-d447-4997-9932-9784b13250d5" />
 
+## Loopback Processing
+Loopback processing is a tool that can feel pretty confusing until you understand why it exists. To put it simply, loopback processing is used when the computer's role matters more than the user's. What does that exactly mean? Well, say for example you have a computer functioning as a kiosk, a dedicated machine that you want to be locked down and run a limited set of applications on for a specific purpose. An easy way to accomplish this is to use loopback processing. Normally, user GPOs apply based on where the account lives in AD, and computer GPOs apply based on where the computer lives. Loopback processing flips this logic on its head so that user settings are determined by the computer they log into. Let's dive into setting this up. I have already created a kiosk vm that we will use for example purposes. The first thing that I want to do is create a new OU, which we will place in the Sales OU, that will hold this new computer within it.
 
+<img width="953" height="528" alt="Screenshot 2026-01-27 202503" src="https://github.com/user-attachments/assets/876d372c-882e-4491-933e-84fc6d343aa6" />
 
+Inside group policy management, we will then create a new policy named "Loopback Processing" and link it to the Kiosk_PC OU.
 
+<img width="1018" height="764" alt="Screenshot 2026-01-27 202603" src="https://github.com/user-attachments/assets/fa1781d8-163e-4382-b118-9e8582668ea3" />
 
+Within the group policy management editor, we can navigate to "Computer Configuration" -> "Policies" -> "Administrative Templates" -> "System" -> "Group Policy" -> "Configure user Group Policy loopback processing mode".
 
+<img width="1022" height="765" alt="Screenshot 2026-01-27 202707" src="https://github.com/user-attachments/assets/dc70b79b-5460-4245-9851-851747d84065" />
 
+We will then select "Enable" and be shown two options, "Merge" and "Replace". In merge mode, a user's normal User GPOs apply first and then computer-linked GPOs are added on top. The computer GPO always wins if there is a conflict. You can think of it as "User policies + extra rules because of the computer". You'll want to use this when you want users to keep most of their normal experience but need extra restrictions on specific machines. Merge mode is useful for things like a shared office computer. In replace mode, the normal user GPOs are ignored completely and only the user settings from GPOs linked to the computer's OU apply. This is useful when you need tight control and locked down behavior on a system that needs to serve a specific purpose, like our kiosk machine. Replace is the option we will be choosing.
 
+<img width="1020" height="761" alt="Screenshot 2026-01-27 202755" src="https://github.com/user-attachments/assets/ef3c069e-1e5a-4f7e-a868-5eb818ee5992" />
 
+Because this is a lab and we are just testing to see if this works the way we want it to, we aren't going to configure many settings around this. What we will do is prohibit access to the control panel through the same GPO that we are in.
 
+<img width="1020" height="765" alt="Screenshot 2026-01-27 202917" src="https://github.com/user-attachments/assets/691688c9-abbc-43a5-9374-c842a484a255" />
+
+We will then log on to our kiosk machine as Hayley Williams, a user within our Sales department.
+
+<img width="290" height="62" alt="Screenshot 2026-01-27 203401" src="https://github.com/user-attachments/assets/9ef37a02-d9f1-434b-87fe-afc9f83cbfd4" />
+
+As we can see, upon trying to open up the control panel we get a notification that this has been cancelled due to restrictions on the machine.
+
+<img width="977" height="712" alt="Screenshot 2026-01-27 203412" src="https://github.com/user-attachments/assets/401de7a3-ffbd-4bfb-912b-ac42c705bd33" />
+
+But what if we log on as an administrator?
+
+<img width="306" height="68" alt="Screenshot 2026-01-27 203601" src="https://github.com/user-attachments/assets/63bc8f45-ead4-4e02-a5c8-c18173c20443" />
+
+Will we then be able to configure settings within the control panel now?
+
+<img width="1020" height="765" alt="Screenshot 2026-01-27 203610" src="https://github.com/user-attachments/assets/54d3794c-12c6-4e67-890d-106e3f01b4f6" />
+
+The answer to that is no. Because of loopback processing, the machine protects itself even from administrators. This effectively can lock down a computer to be used for a specific purpose, such as a kiosk, lab machine, school computer, etc.. Depending on the goals of specific machines within your organization, you may find this as a very useful tool.
 
 
 
