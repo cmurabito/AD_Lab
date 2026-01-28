@@ -153,7 +153,7 @@ I wanted to go ahead and prevent any DNS issues in the future so I pulled up the
 
 I then went to interfaces, and selected the IP of the internal ethernet adapter's interface.
 
-<img width="1359" height="863" alt="Screenshot 2025-12-22 104256" src="https://github.com/user-attachments/assets/db15b98c-ac35-453f-9cbb-a093c99dd30b" />
+<img width="1359" height="862" alt="markup" src="https://github.com/user-attachments/assets/268bd7a1-fcd9-4471-80f0-dc2c04b45b2b" />
 
 ## Connecting Windows VM to Domain
 Now its time to connect our first Windows 11 VM to the domain! This assumes you already have a Windows VM setup. It is as simple as going into Settings, searching for Access Work or School, selecting Connect and "Join this device to a local Active Directory domain", and then inputting the name of our domain, which is "Lab.local".
