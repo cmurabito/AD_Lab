@@ -26,9 +26,10 @@ The purpose of this repository is to document my progress in my Active Directory
 
 # Documentation
 ## Network Diagram
-For this lab setup we are going to be connecting our domain controller to the external internet as well as running an internal network for our client VM on Hyper-V. This will change eventually and we will be adding another server.
+For this lab setup we are going to be connecting our domain controller to the external internet as well as running an internal network for our client VMs and file server on Hyper-V. This will eventually be updated to include a second domain controller for redundancy.
 
-<img width="121" height="461" alt="Network Diagram drawio" src="https://github.com/user-attachments/assets/5cfde644-8b42-4306-917a-df89344c47ca" />
+<img width="641" height="761" alt="Updated network diagram" src="https://github.com/user-attachments/assets/d26c0f33-55dd-4366-8794-ff5936402745" />
+
 
 ## Setting Up Windows Server VM Within Hyper-V
 My first step in this homelab was to install Windows Server 2022 within Hyper-V.
