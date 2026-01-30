@@ -26,7 +26,7 @@ The purpose of this repository is to document my progress in my Active Directory
 
 # Documentation
 ## Network Diagram
-For this lab setup we are going to be connecting our domain controller to the external internet as well as running an internal network for our client VMs and file server on Hyper-V. This will eventually be updated to include a second domain controller for redundancy.
+For this lab setup we are going to be connecting our domain controller to pfSense that will act as a gateway. We will also be running a LAN network for our domain and it's client machines on Hyper-V so that we can keep our domain network properly segmented from the home network. This will eventually be updated to include a second domain controller for redundancy.
 
 <img width="641" height="761" alt="Updated network diagram" src="https://github.com/user-attachments/assets/3086320f-1d0c-461a-9d65-e3c1a9496356" />
 
