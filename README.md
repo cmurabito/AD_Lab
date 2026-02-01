@@ -1,6 +1,7 @@
 # AD_Lab
 The purpose of this repository is to document my progress in my Active Directory homelab. Hyper-V will be utilized as the hypervisor of choice during this process. Progress will constantly be updated below along with a table of contents for easier navigation.
 # Table of Contents
+### Basic Configuration
 * [Network Diagram](#network-diagram)
 * [Initial Setup](#setting-up-windows-server-vm-within-hyper-v)
 * [Configuring Networking](#configuring-networking)
@@ -17,12 +18,14 @@ The purpose of this repository is to document my progress in my Active Directory
 * [Creating Security Groups](#creating-security-groups)
 * [AGDLP](#agdlp)
 * [Delegation](#delegation)
+### Group Policy and File Server Configuration
 * [Password Policy and Account Lockout](#password-policy-and-account-lockout)
 * [GPOs](#gpos)
 * [GPResult/RSOP.msc](#gpresultrsopmsc)
 * [File Services](#file-services)
 * [Deploying MSI Software via GPO](#deploying-msi-software-via-gpo)
 * [Loopback Processing](#loopback-processing)
+* [WMI Filtering](#wmi-filtering)
 
 # Documentation
 ## Network Diagram
@@ -669,18 +672,35 @@ Will we then be able to configure settings within the control panel now?
 
 The answer to that is no. Because of loopback processing, the machine protects itself even from administrators. This effectively can lock down a computer to be used for a specific purpose, such as a kiosk, lab machine, school computer, etc.. Depending on the goals of specific machines within your organization, you may find this as a very useful tool.
 
+## WMI Filtering
+WMI Filtering is a handy tool that we can use when we want to differentiate policy by things such as hardware specifications. Say for example that you have Windows 11 machines and Windows 10 machines. There may be (and there typically should be) ways that you want to configure Windows 10 clients different than Windows 11 clients. This can be accomplished through WMI filtering. Let's begin to explore this. I've gone ahead and added a Windows 10 VM into my lab, assigning it to the HR department.
 
+<img width="1005" height="733" alt="Screenshot 2026-01-31 183329" src="https://github.com/user-attachments/assets/1f0f29da-ccaf-4903-a0b5-44eced85b592" />
 
+We can now open group policy management and head down to "WMI Filters", right click, and choose to add a new filter. We will give this a name "Windows 10 Workstations" and a description, as well as add a query. There are many things you can add here, and a handy link or cheatsheet can be found at this link: [WMI Filter Cheat Sheet](https://www.dannymoran.com/wmi-filter-cheat-sheet/). We are going to add the query in the screenshot below to differentiate Windows 10 workstations no matter the version.
 
+<img width="1020" height="763" alt="Screenshot 2026-01-31 184447" src="https://github.com/user-attachments/assets/4f15c9b0-3744-4dea-98c8-d8b01a67b2c8" />
 
+We will save this and do the same for our Windows 11 workstations, only adding a slightly different query.
 
+<img width="1023" height="765" alt="Screenshot 2026-01-31 184624" src="https://github.com/user-attachments/assets/04180711-424e-4390-a359-a4790b61ff26" />
 
+We now should have two different WMI filters listed. 
 
+<img width="1020" height="758" alt="Screenshot 2026-01-31 184638" src="https://github.com/user-attachments/assets/0841f59b-f6da-4993-9523-edf705985ff5" />
 
+Now for testing purposes to ensure targeting is working correctly, we will create two new GPOs, "Windows 10 test" and "Windows 11 test".
 
+<img width="1016" height="759" alt="Screenshot 2026-01-31 184842" src="https://github.com/user-attachments/assets/3bc1387e-aea7-4a29-8c8b-60faeb821108" />
 
+For testing, I am going to simply configure these GPOs to create a new folder in the C:\ directory. For Windows 10 machines this folder will be called "TestFolder" and for Windows 11 machines it will be called "TestFolderWin11".
 
+<img width="1014" height="760" alt="Screenshot 2026-01-31 185234" src="https://github.com/user-attachments/assets/f9b48b64-8fcc-411b-9a44-0783f697a194" />
 
+We will go ahead and log into our Windows 10 machine and perform a gpupdate and give the machine a restart. Upon logging in, we should be able to navigate to C:\ and see that our test folder we configured for Windows 10 clients has been created but not the one we created for Windows 11 clients, meaning this is working as we intend it to.
 
+<img width="1022" height="762" alt="Screenshot 2026-01-31 185803" src="https://github.com/user-attachments/assets/c9f4c3ec-d348-4559-863a-2c8c5a201bb2" />
 
+We can then log into our Windows 11 machine and see that this is the case as well but instead of the folder we created for Windows 10 clients, we have the folder we created specifically for Windows 11 clients.
 
+<img width="1018" height="762" alt="Screenshot 2026-01-31 185921" src="https://github.com/user-attachments/assets/7ca9bef2-771c-4b6a-bd15-43bd6caac403" />
