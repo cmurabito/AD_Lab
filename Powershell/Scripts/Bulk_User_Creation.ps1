@@ -11,7 +11,7 @@ foreach ($user in  $users) {
     $OU = $user.OU
     $password = "insertpasshere"
     
-## Defines username checking va4riable
+## Defines username checking variable
     $usercheck = Get-ADUser -Filter "SamAccountName -eq '$samaccount'"
 
     ## Checks if user account is already in database. If not, creates account.
@@ -23,3 +23,4 @@ foreach ($user in  $users) {
     }
     
 }
+
