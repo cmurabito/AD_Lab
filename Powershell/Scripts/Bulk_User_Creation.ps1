@@ -15,7 +15,7 @@ foreach ($user in  $users) {
     $usercheck = Get-ADUser -Filter "SamAccountName -eq '$samaccount'"
 
     ## Checks if user account is already in database. If not, creates account.
-    if ($null -ne $usercheck) {
+    if ($null -eq $usercheck) {
         New-ADUser -Name "$displayname" -DisplayName "$displayname" -SamAccountName $samaccount -UserPrincipalName $upn -GivenName "$firstname" -Surname "$surname" -AccountPassword (ConvertTo-SecureString $password -AsPlainText -Force) -Enabled $true -Path $OU -ChangePasswordAtLogon $true -server Lab.local
         Write-Host "$samaccount successfully added to user database."
     } else {
@@ -23,4 +23,5 @@ foreach ($user in  $users) {
     }
     
 }
+
 
