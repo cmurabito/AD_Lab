@@ -26,6 +26,8 @@ The purpose of this repository is to document my progress in my Active Directory
 * [Deploying MSI Software via GPO](#deploying-msi-software-via-gpo)
 * [Loopback Processing](#loopback-processing)
 * [WMI Filtering](#wmi-filtering)
+### Automation
+* [Testing Bulk User Creation Script](#testing-bulk-user-creation-script)
 
 # Documentation
 ## Network Diagram
@@ -704,3 +706,28 @@ We will go ahead and log into our Windows 10 machine and perform a gpupdate and 
 We can then log into our Windows 11 machine and see that this is the case as well but instead of the folder we created for Windows 10 clients, we have the folder we created specifically for Windows 11 clients.
 
 <img width="1018" height="762" alt="Screenshot 2026-01-31 185921" src="https://github.com/user-attachments/assets/7ca9bef2-771c-4b6a-bd15-43bd6caac403" />
+
+## Testing Bulk User Creation Script
+I wanted to create a script that would allow me to be able to add users from a .CSV file to help automate things rather than creating each user one by one. This would also come in handy in the event of a DC failure where one might have to add everybody back. I created a folder named scripts on my Domain Controller within my lab environment and have the script itself uploaded to [my scripts directory](https://github.com/cmurabito/AD_Lab/tree/main/Powershell/Scripts). Below is how I went about testing it. First I put the script inside the scripts folder.
+
+<img width="1013" height="759" alt="Screenshot 2026-02-08 083637" src="https://github.com/user-attachments/assets/5f507fe0-18c9-4db1-953a-4bad18866103" />
+
+Next, I created a .CSV that contained the headers "FirstName", "LastName", "Username", and "OU". I also added information for one user that was already in the system and information for a user that is not in the system yet.
+
+<img width="1017" height="761" alt="Screenshot 2026-02-08 083701" src="https://github.com/user-attachments/assets/ca671d18-86cc-44f3-b77d-018b10221ba4" />
+
+Then I opened the script within PowerShell ISE to edit some things. The main things that I wanted to edit were the .CSV location and the password that was to be set.
+
+<img width="1020" height="764" alt="Screenshot 2026-02-08 083844" src="https://github.com/user-attachments/assets/2e1b47a4-61e7-4f3e-99bb-c6700c7459ba" />
+
+After running the script, it seemed to perform as I expected it to. The user jsmith was already in the system so it did not create him and prodced output that stated that he already existed in the user database, and for the user jdavidson, produced output that stated he was added to the user database.
+
+<img width="1021" height="759" alt="Screenshot 2026-02-08 083926" src="https://github.com/user-attachments/assets/6fd313ea-de10-4e6d-b411-8317ab083601" />
+
+I was able to double check this by heading into Active Directory Users and Computers and verifying that jdavidson was indeed created.
+
+<img width="1019" height="767" alt="Screenshot 2026-02-08 084029" src="https://github.com/user-attachments/assets/b6176900-fc22-497f-92b6-dcb67259f8d1" />
+
+
+
+
