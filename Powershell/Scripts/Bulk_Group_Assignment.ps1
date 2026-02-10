@@ -6,7 +6,7 @@ foreach ($user in $list) {
     $Group = $user.GroupName
     
     ## Performs a check to see if user is part of specified group
-    $isUser = Get-ADGroupMember -Identity $Group -Recursive | Where-Object {$_.SamAccountName -eq $userSam}
+    $isUser = Get-ADGroupMember -Identity $Group -Recursive | Where-Object {$_.SamAccountName -eq $Username}
 
     ## If the user is already in the group, the user is skipped. Otherwise, the user is added.
     if ($isUser) {
