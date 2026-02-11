@@ -28,6 +28,7 @@ The purpose of this repository is to document my progress in my Active Directory
 * [WMI Filtering](#wmi-filtering)
 ### Automation
 * [Testing Bulk User Creation Script](#testing-bulk-user-creation-script)
+* [Testing Bulk Group Assignment Script](#testing-bulk-group-assignment-script)
 
 # Documentation
 ## Network Diagram
@@ -727,6 +728,34 @@ After running the script, it seemed to perform as I expected it to. The user jsm
 I was able to double check this by heading into Active Directory Users and Computers and verifying that jdavidson was indeed created.
 
 <img width="1019" height="767" alt="Screenshot 2026-02-08 084029" src="https://github.com/user-attachments/assets/b6176900-fc22-497f-92b6-dcb67259f8d1" />
+
+## Testing Bulk Group Assignment Script
+Another piece of automation I wanted to include in my lab was the ability to assign users to specified groups from a .CSV file. This would in theory work in conjunction with bulk user creation so that the users that were created wouldn't have to be manually gone through and assigned to their respective groups. In my folder on my domain controller the [script](https://github.com/cmurabito/AD_Lab/tree/main/Powershell/Scripts) in question was placed into the scripts folder.
+
+<img width="1020" height="764" alt="Screenshot 2026-02-10 183920" src="https://github.com/user-attachments/assets/d5b1d618-e0cc-4116-9f96-776eaddd2848" />
+
+I then created a .CSV file with notepad that included the headers "Username" and "GroupName" to match the variables within the script.
+
+<img width="1023" height="762" alt="Screenshot 2026-02-10 184448" src="https://github.com/user-attachments/assets/dd4cdcb8-84f2-4d52-9829-d269bf126156" />
+
+For this example we will be targeting the Information Technology group, since the user that we created was put into the IT OU. As we can see, our other user jbourne is already in this group. 
+
+<img width="1020" height="763" alt="Screenshot 2026-02-10 184004" src="https://github.com/user-attachments/assets/0fc3286b-48f6-42aa-bed7-af9b1aad0100" />
+
+As we can see from above, jbourne is already a member of the Information Technology group. If the script functions as intended, then he will not be added to the group and the script will out put "jbourne is already a member of Information Technology. Skipping...". If jdavidson is added, it will output that he was added.
+
+<img width="1024" height="760" alt="Screenshot 2026-02-10 184019" src="https://github.com/user-attachments/assets/3bba9cbf-a2f8-4348-93de-88a7671aa033" />
+
+We can now run the script. As we can see, we have achieved the desired output. Next we will have to verify visually that he was indeed added.
+
+<img width="1022" height="768" alt="Screenshot 2026-02-10 184524" src="https://github.com/user-attachments/assets/cc623521-4d3a-4282-b1d7-5b8d9a3a1037" />
+
+And as we can see, Jack Davidson was successfully added to this group. We now have a brand new member of IT! 
+
+<img width="1022" height="767" alt="Screenshot 2026-02-10 184541" src="https://github.com/user-attachments/assets/e2873ef9-99e7-4468-a1b8-8c529f0b37ec" />
+
+
+
 
 
 
