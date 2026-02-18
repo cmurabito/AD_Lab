@@ -34,7 +34,8 @@ The purpose of this repository is to document my progress in my Active Directory
 ## Network Diagram
 For this lab setup we are going to be connecting our domain controller to pfSense that will act as a gateway. We will also be running a LAN network for our domain and it's client machines on Hyper-V so that we can keep our domain network properly segmented from the home network. This will eventually be updated to include a second domain controller for redundancy.
 
-<img width="641" height="761" alt="Updated network diagram" src="https://github.com/user-attachments/assets/3086320f-1d0c-461a-9d65-e3c1a9496356" />
+<img width="641" height="761" alt="image" src="https://github.com/user-attachments/assets/1c87d986-fd12-47e2-a0c8-3701a5ee686d" />
+
 
 ## Setting Up Windows Server VM Within Hyper-V
 My first step in this homelab was to install Windows Server 2022 within Hyper-V.
