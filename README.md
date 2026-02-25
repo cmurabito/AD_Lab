@@ -32,9 +32,9 @@ The purpose of this repository is to document my progress in my Active Directory
 
 # Documentation
 ## Network Diagram
-For this lab setup we are going to be connecting our domain controller to pfSense that will act as a gateway. We will also be running a LAN network for our domain and it's client machines on Hyper-V so that we can keep our domain network properly segmented from the home network. This will eventually be updated to include a second domain controller for redundancy.
+For this lab setup we are going to be connecting our domain controllers to pfSense that will act as a gateway. There will be a file server that all client VMs will have access to, along with their individual folders. We will be running a LAN network for our domain and it's client machines on Hyper-V so that we can keep our domain network properly segmented from our home network.
 
-<img width="641" height="761" alt="image" src="https://github.com/user-attachments/assets/1c87d986-fd12-47e2-a0c8-3701a5ee686d" />
+<img width="681" height="881" alt="image" src="https://github.com/user-attachments/assets/f8d54a08-e060-4b44-a60d-dcf4fc65ee06" />
 
 
 ## Setting Up Windows Server VM Within Hyper-V
