@@ -31,6 +31,7 @@ The purpose of this repository is to document my progress in my Active Directory
 * [Testing Bulk Group Assignment Script](#testing-bulk-group-assignment-script)
 ### Resilience
 * [Deploying Second Domain Controller](#deploying-second-domain-controller)
+* [Moving FSMO Roles](#moving-fsmo-roles)
 # Documentation
 ## Network Diagram
 For this lab setup we are going to be connecting our domain controllers to pfSense that will act as a gateway. There will be a file server that all client VMs will have access to, along with their individual folders. We will be running a LAN network for our domain and it's client machines on Hyper-V so that we can keep our domain network properly segmented from our home network.
@@ -793,6 +794,11 @@ A visual inspection never hurts either. We have successfully deployed a second D
 
 <img width="1022" height="765" alt="Screenshot 2026-02-23 184102" src="https://github.com/user-attachments/assets/93776dea-18b8-411c-bd1d-3e0c521387a1" />
 
+## Moving FSMO Roles
+Moving (or transferring) FSMO roles is usually done for stability or maintenance reasons. If the current FSMO role holder is older hardware for instance, it would be a good idea to transfer FSMO roles so that the hardware can be replaced. Some roles are more intensive than others, such as the PDC emulator, and should be moved if performance is significantly slow. If you plan to demote a DC, FSMO roles must be transferred before this happens. There are many other reasons you may have to do this as well. Let's go ahead and practice this. First, let's open powershell on the server that we are transferring roles from. We'll type in "Move-ADDirectoryServerOperationMasterRole -Identity DC02.Lab.local -OperationMasterRole 1, 2". What this will do is transfer the PDC Emulator and RID Master to the second domain controller.
 
+<img width="1022" height="756" alt="Screenshot 2026-02-23 185356" src="https://github.com/user-attachments/assets/28a4fdcd-c77b-48e5-b97f-f2637d994c27" />
 
+It will ask us to confirm this. Make sure to READ. Please pay attention to details before any of this is done, although they will transfer gracefully, details matter when performing this kind of maintenance. After this process completes, we can type in "netdom query fsmo" In order to confirm which server has which role. That is all there is to it!
 
+<img width="1023" height="760" alt="Screenshot 2026-02-23 185532" src="https://github.com/user-attachments/assets/123c9b5b-2f38-45ab-9792-a5deceb7938a" />
