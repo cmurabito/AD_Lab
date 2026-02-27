@@ -29,7 +29,8 @@ The purpose of this repository is to document my progress in my Active Directory
 ### Automation
 * [Testing Bulk User Creation Script](#testing-bulk-user-creation-script)
 * [Testing Bulk Group Assignment Script](#testing-bulk-group-assignment-script)
-
+### Resilience
+* [Deploying Second Domain Controller](#deploying-second-domain-controller)
 # Documentation
 ## Network Diagram
 For this lab setup we are going to be connecting our domain controllers to pfSense that will act as a gateway. There will be a file server that all client VMs will have access to, along with their individual folders. We will be running a LAN network for our domain and it's client machines on Hyper-V so that we can keep our domain network properly segmented from our home network.
@@ -755,8 +756,42 @@ And as we can see, Jack Davidson was successfully added to this group. We now ha
 
 <img width="1022" height="767" alt="Screenshot 2026-02-10 184541" src="https://github.com/user-attachments/assets/e2873ef9-99e7-4468-a1b8-8c529f0b37ec" />
 
+## Deploying Second Domain Controller
+Deploying a second domain controller provides benefits within an Active Directory environment. These benefits revolve around reliability, security, and performance. Some reasons to do this include high availability and redundancy. If the primary domain controller fails, users will still be able to log in and access network resources. A second domain controller can also make sure that services continue during routine patching or maintenance. In a large environment, authentication requests can overload a single domain controller, a second makes sure that doesn't happen. If a domain controller gets compromised, a seperate domain controller contains a replicated copy of the AD database, group policies, and security groups and users. These are all great reasons to implement a second domain controller. Let's walk through this process. I have gone ahead and installed windows server on a Hyper-V virtual machine.
 
+<img width="1020" height="753" alt="Screenshot 2026-02-23 182220" src="https://github.com/user-attachments/assets/4b109e7c-7319-42d9-bc73-c19b6a7bc657" />
 
+We're going to go ahead and give this server an IP address of 192.168.10.20, set the gateway to the IP of our pfSense machine, and set the Primary DNS to our original domain controller.
+
+<img width="1020" height="764" alt="Screenshot 2026-02-23 182329" src="https://github.com/user-attachments/assets/2ebe963f-ff88-4f06-88fc-86c474580e0d" />
+
+We then will give this server a name of "DC02" and go ahead and join it to our domain.
+
+<img width="1022" height="764" alt="Screenshot 2026-02-23 182525" src="https://github.com/user-attachments/assets/ed2520be-a4f9-4caf-90b2-536cb7b4c2b1" />
+
+After a restart, we will go ahead and install "Active Directory Domain Services"
+
+<img width="1018" height="766" alt="Screenshot 2026-02-23 182808" src="https://github.com/user-attachments/assets/6ec06c2b-e92a-4702-bc58-5afd9e728ffd" />
+
+Remember to promote it to a domain controller.
+
+<img width="1018" height="762" alt="Screenshot 2026-02-23 182905" src="https://github.com/user-attachments/assets/f5e09818-acd9-4c9d-ad55-8994d9fb116c" />
+
+We will select "Add a domain controller to an existing domain" and specify our domain name.
+
+<img width="1019" height="764" alt="Screenshot 2026-02-23 182927" src="https://github.com/user-attachments/assets/ab402ba6-cebf-495b-8c25-ec5225b660e8" />
+
+Specify a "Directory Services Restore Mode" password.
+
+<img width="1021" height="763" alt="Screenshot 2026-02-23 183106" src="https://github.com/user-attachments/assets/1afeecb1-66a1-41ef-b193-6596e8f5536f" />
+
+Now it should be close to done. We'll want to go ahead and verify that it replicated our primary DC though. We can do this by opening up the command prompt and typing "repadmin /replsummary". This will display whether there were any failures that occured during replication. Here we can see that there were 0 failures. This is good.
+
+<img width="1020" height="763" alt="Screenshot 2026-02-23 184030" src="https://github.com/user-attachments/assets/53948288-1522-47ce-baca-0731bd29fa05" />
+
+A visual inspection never hurts either. We have successfully deployed a second DC!
+
+<img width="1022" height="765" alt="Screenshot 2026-02-23 184102" src="https://github.com/user-attachments/assets/93776dea-18b8-411c-bd1d-3e0c521387a1" />
 
 
 
