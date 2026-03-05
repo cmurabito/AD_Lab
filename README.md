@@ -32,6 +32,7 @@ The purpose of this repository is to document my progress in my Active Directory
 ### Resilience
 * [Deploying Second Domain Controller](#deploying-second-domain-controller)
 * [Moving FSMO Roles](#moving-fsmo-roles)
+* [Backing up AD](#backing-up-ad)
 # Documentation
 ## Network Diagram
 For this lab setup we are going to be connecting our domain controllers to pfSense that will act as a gateway. There will be a file server that all client VMs will have access to, along with their individual folders. We will be running a LAN network for our domain and it's client machines on Hyper-V so that we can keep our domain network properly segmented from our home network.
@@ -802,3 +803,53 @@ Moving (or transferring) FSMO roles is usually done for stability or maintenance
 It will ask us to confirm this. Make sure to READ. Please pay attention to details before any of this is done, although they will transfer gracefully, details matter when performing this kind of maintenance. After this process completes, we can type in "netdom query fsmo" In order to confirm which server has which role. That is all there is to it!
 
 <img width="1023" height="760" alt="Screenshot 2026-02-23 185532" src="https://github.com/user-attachments/assets/123c9b5b-2f38-45ab-9792-a5deceb7938a" />
+
+## Backing up AD
+Backups within your Active Directory environment are essential incase something is accidentally deleted or your server becomes compromised. There are options for third party backup services(such as veeam), but we will be going through backing up AD with its own built in tool, Windows Server Backup. First we will go to Tools and select Windows Server Backup. If you do not have this installed you will still be able to see it, but you will need to install the feature to actually use it through "Add Roles and Features".
+
+<img width="1020" height="765" alt="Screenshot 2026-03-01 173216" src="https://github.com/user-attachments/assets/a90ef268-66f7-442a-9e70-cc2e380f70b1" />
+
+Select "Local Backup" and then select "Backup Once".
+
+<img width="1017" height="762" alt="Screenshot 2026-03-01 173504" src="https://github.com/user-attachments/assets/f8a1531c-986d-482b-98a2-6cf86a5e88d0" />
+
+Select "Different Options" and then hit next.
+
+<img width="1018" height="761" alt="Screenshot 2026-03-01 173528" src="https://github.com/user-attachments/assets/5c6b5a7b-b2de-45c4-bae6-db8775cf423d" />
+
+Choose "Full Server".
+
+<img width="1019" height="763" alt="Screenshot 2026-03-01 173540" src="https://github.com/user-attachments/assets/5eca3f20-af0e-4fd1-af00-71bab370fba7" />
+
+Now, you can either select to create a backup locally or send it to a remote folder. We are going to store it on the file server in a designated location, so we will go ahead and enter "\\FS01\Backups$".
+
+<img width="1021" height="765" alt="Screenshot 2026-03-01 173957" src="https://github.com/user-attachments/assets/85b2a032-db2a-4f1e-a255-b020aed9d79c" />
+
+Then we wait for it to complete!
+
+<img width="1018" height="762" alt="Screenshot 2026-03-01 174231" src="https://github.com/user-attachments/assets/93b775ba-8b13-4c42-a2b2-829f3ffa4555" />
+
+We can then check the destination on our file server and confirm it has been written to that designated location.
+
+<img width="1021" height="762" alt="Screenshot 2026-03-01 174320" src="https://github.com/user-attachments/assets/85e64aec-c931-443d-83ca-dd12ae8e3380" />
+
+Another way we can do this is through the command prompt using wbadmin. Let's go ahead and open up the command prompt and type "wbadmin start systemstatebackup -backuptarget:\\FS01\Backups$". We will be doing this on our second domain controller to verify that this works correctly. It will ask if we want to start the backup operation. We will type "Y".
+
+<img width="1019" height="762" alt="Screenshot 2026-03-01 174544" src="https://github.com/user-attachments/assets/39412b88-bf39-4fb3-8a72-c759ca531e34" />
+
+After waiting a while, we should get confirmation that this completed.
+
+<img width="1015" height="760" alt="Screenshot 2026-03-01 175213" src="https://github.com/user-attachments/assets/747b565d-a05d-4ed0-a069-8a8fc2014c31" />
+
+And then of course we can visually verify this by opening the target location on our file server.
+
+<img width="1019" height="765" alt="Screenshot 2026-03-01 175243" src="https://github.com/user-attachments/assets/56ded857-b27a-49bb-aa16-4f332dfcea8d" />
+
+
+
+
+
+
+
+
+
